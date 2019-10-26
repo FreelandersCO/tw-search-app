@@ -11,8 +11,8 @@ class TwitterSearchApp():
     def __init__(self):
         connection = MongoClient(MONGO_URL, MONGO_PORT)
         self.db = connection[DB_NAME]
-        # print('Running Twitter Cron')
-        response = requests.get('http://127.0.0.1:1337/searches/')
+        print('Running Twitter Cron')
+        response = requests.get('http://127.0.0.1:1337/twsearches/')
         if response.status_code == 200:
             terms = response.json()
             for term in terms:
@@ -40,10 +40,10 @@ class TwitterSearchApp():
             self.insertData(tweet)
 
     def insertData(self, data):
-        print(data)
-
-        self.db.tweets.insert_one(data)
-
+        exist = self.db.tweets.find_one({"id": data['id']})
+        if exist is None:
+            self.db.tweets.insert_one(data)
+       
 def main():
   print('Class Executor')
   TwitterSearchApp()
