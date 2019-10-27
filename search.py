@@ -2,17 +2,18 @@ import requests, sys, time, json
 from pymongo import MongoClient
 from TwitterSearch import *
 
-MONGO_URL = '127.0.0.1'
+MONGO_URL = 'mongo-app'
 MONGO_PORT = 27017
 DB_NAME = 'tw-listening'
-
+USER = 'userd4t4'
+PASS = '1nt3r4ct1v3'
 
 class TwitterSearchApp():
     def __init__(self):
-        connection = MongoClient(MONGO_URL, MONGO_PORT)
+        connection = MongoClient('mongodb://%s:%s@%s:%s' % (USER, PASS, MONGO_URL, MONGO_PORT))
         self.db = connection[DB_NAME]
         print('Running Twitter Cron')
-        response = requests.get('http://127.0.0.1:1337/twsearches/')
+        response = requests.get('http://cms-app:1337/twsearches/')
         if response.status_code == 200:
             terms = response.json()
             for term in terms:
